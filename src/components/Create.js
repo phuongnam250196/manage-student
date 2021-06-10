@@ -19,7 +19,7 @@ const Create = (props) => {
                             <InputGroupAddon addonType="prepend">
                                 <InputGroupText><i className="fa fa-search" aria-hidden="true"></i></InputGroupText>
                             </InputGroupAddon>
-                            <Input className="header_search_input" placeholder="Tìm kiếm theo mã, số điện thoại" />
+                            <Input className="header_search_input" name="keyword" placeholder="Tìm kiếm theo mã, số điện thoại" />
                             <InputGroupAddon addonType="append">
                                 <InputGroupText><i className="fa fa-microphone" aria-hidden="true"></i></InputGroupText>
                             </InputGroupAddon>
@@ -43,93 +43,93 @@ const Create = (props) => {
                 <Row>
                     <Col xs={6}>
                         <FormGroup row>
-                            <Label for="maTTS" sm={3}>Mã TTS</Label>
+                            <Label for="id-intern" sm={3}>Mã TTS</Label>
                             <Col sm={9}>
-                                <Input type="text" name="email" id="maTTS" />
+                                <Input type="text" name="idIntern" id="id-intern" />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="hoTen" sm={3}>Họ tên</Label>
+                            <Label for="full-name" sm={3}>Họ tên</Label>
                             <Col sm={9}>
-                                <Input type="text" name="email" id="hoTen" />
+                                <Input type="text" name="fullName" id="full-name" />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="ngaySinh" sm={3}>Ngày sinh</Label>
+                            <Label for="birthday" sm={3}>Ngày sinh</Label>
                             <Col sm={9}>
-                                <Input type="datetime" name="email" id="ngaySinh" />
+                                <Input type="datetime" name="birthday" id="birthday" />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Label sm={3}>Giới tính</Label>
                             <Col sm={9}>
-                                <Input type="radio" name="gioiTinh" /> Nam {' - '}
-                                <Input type="radio" name="gioiTinh" /> Nữ
+                                <Input type="radio" name="sex" /> Nam {' - '}
+                                <Input type="radio" name="sex" /> Nữ
                             </Col>
                         </FormGroup>
 
                         <FormGroup row>
-                            <Label for="exampleSelect" sm={3}>Quê quán</Label>
+                            <Label for="home-town" sm={3}>Quê quán</Label>
                             <Col sm={9}>
-                                <Input type="select" name="select" id="exampleSelect">
+                                <Input type="select" name="homeTown" id="home-town">
                                     <option>-- Chọn --</option>
                                     <option>Hà Nội</option>
                                 </Input>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="soDT" sm={3}>Số điện thoại</Label>
+                            <Label for="phone" sm={3}>Số điện thoại</Label>
                             <Col sm={9}>
-                                <Input type="number" name="soDT" id="soDT" />
+                                <Input type="number" name="phone" id="phone" />
                             </Col>
                         </FormGroup>
                     </Col>
                     <Col xs={6}>
                         <FormGroup row>
-                            <Label for="exampleSelect" sm={3}>Trường</Label>
+                            <Label for="school" sm={3}>Trường</Label>
                             <Col sm={9}>
-                                <Input type="select" name="select" id="exampleSelect">
+                                <Input type="select" name="school" id="school">
                                     <option>-- Chọn --</option>
                                     <option>TLU</option>
                                 </Input>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="exampleSelect" sm={3}>Chuyên ngành</Label>
+                            <Label for="specialized" sm={3}>Chuyên ngành</Label>
                             <Col sm={9}>
-                                <Input type="select" name="select" id="exampleSelect">
+                                <Input type="select" name="specialized" id="specialized">
                                     <option>-- Chọn --</option>
                                     <option>TLU</option>
                                 </Input>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="hoTen" sm={3}>Vị trí thực tập</Label>
+                            <Label for="position" sm={3}>Vị trí thực tập</Label>
                             <Col sm={9}>
-                                <Input type="text" name="email" id="hoTen" />
+                                <Input type="text" name="position" id="position" />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="hoTen" sm={3}>Ngày bắt đầu</Label>
+                            <Label for="start-date" sm={3}>Ngày bắt đầu</Label>
                             <Col sm={9}>
-                                <Input type="datetime" name="email" id="hoTen" />
+                                <Input type="datetime" name="startDate" id="start-date" />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="hoTen" sm={3}>Email</Label>
+                            <Label for="email" sm={3}>Email</Label>
                             <Col sm={9}>
-                                <Input type="email" name="email" id="hoTen" />
+                                <Input type="email" name="email" id="email" />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Col sm={3}>
-                                <Input type="select">
+                                <Input type="select" name="idCardType">
                                     <option>CMND</option>
                                     <option>CCCD</option>
                                 </Input>
                             </Col>
                             <Col sm={9}>
-                                <Input type="text" name="email" id="hoTen" />
+                                <Input type="text" name="idCard" />
                             </Col>
                         </FormGroup>
                     </Col>
