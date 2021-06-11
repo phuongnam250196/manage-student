@@ -1,15 +1,13 @@
 import './App.css';
 
-import Login from './components/Login';
-import Create from './components/Create';
-import List from './components/List';
+
+import Exercise1 from './components/Exercise1';
 
 
 function App() {
   return (
     <div className="App">
-        {/* <Login /> */}
-        <List />
+        <Exercise1 />
     </div>
   );
 }
