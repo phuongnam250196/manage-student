@@ -8,12 +8,11 @@ class Exercise1 extends Component {
         super(props);
         this.state= {
             user: {},
-            data: {
-                comments: [],
-            },
+            data: [],
             name: '',
             content: '',
             pos: -1,
+            pos2: -1,
         }
     }
 
@@ -24,28 +23,53 @@ class Exercise1 extends Component {
     getData() {
         let user = {
             id: 12,
-            name: 'Nam tran',
-            description: 'Học reactJS bắt đầu',
+            name: 'Admin',
         }
-        let data = {
-            comments: [
-                {
-                    'user': 'Nam tran',
-                    'content': 'ReactJS là gì?',
-                    'like': false,
-                },
-                {
-                    'user': 'Levantoi',
-                    'content': 'Javascript học như thé nào?',
-                    'like': false,
-                },
-                {
-                    'user': 'Hùng đặng',
-                    'content': '.NET là số 1.',
-                    'like': true,
-                }
-            ],
-        }
+        let data = [
+            {
+                author: 'Nam tran',
+                content: 'src/components/Exercise1.js Line 2:31:  Media is defined but never used  no-unused-varsSearchng',
+                comments: [
+                    {
+                        'author': 'Nam tran',
+                        'content': 'ReactJS là gì?',
+                        'like': false,
+                    },
+                    {
+                        'author': 'Levantoi',
+                        'content': 'Javascript học như thé nào?',
+                        'like': false,
+                    },
+                    {
+                        'author': 'Hùng đặng',
+                        'content': '.NET là số 1.',
+                        'like': true,
+                    }
+                ],
+            },
+            {
+                author: 'Nguyen tran',
+                content: 'src/components/Exercise1.js Line 2:31:  words to learn more about each warning',
+                comments: [
+                    {
+                        'author': 'Nam tran',
+                        'content': 'ReactJS là gì?',
+                        'like': false,
+                    },
+                    {
+                        'author': 'Levantoi',
+                        'content': 'Javascript học như thé nào?',
+                        'like': false,
+                    },
+                    {
+                        'author': 'Hùng đặng',
+                        'content': '.NET là số 1.',
+                        'like': true,
+                    }
+                ],
+            }
+        ];
+
 
         this.setState({
             user,
@@ -53,10 +77,10 @@ class Exercise1 extends Component {
         });
     }
 
-    onClickLike = (e, index) => {
+    onClickLike = (e, i, index) => {
         // console.log(e, index);
         let { data } = this.state;
-        data.comments[index].like = !data.comments[index].like;
+        data[i].comments[index].like = !data[i].comments[index].like;
         this.setState({
             data
         });
@@ -71,17 +95,50 @@ class Exercise1 extends Component {
         });
     }
 
-    onClickComment = () => {
-        let { data, name, content, pos } = this.state;
-        let comment = {
-            user: name,
-            content,
-            like: false,
+    getIndex = (data, name) => {
+        for (let i in data) {
+            if (data[i].author === name) {
+                return i;
+            }
         }
+        return -1;
+    }
+
+    onClickComment = () => {
+        let { data, user, name, content, pos, pos2 } = this.state;
+        let comment = {
+            author: name,
+            content,
+            comments: []
+        }
+        console.log('inex', this.getIndex(data, name));
+        let iU = this.getIndex(data, name);
         if (pos > -1 ) {
-            data.comments.splice(pos, 1, comment);
+            console.log(pos, pos2, data[pos].comments);
+            data.splice(pos, 1, {
+                author: name,
+                content,
+                comments: data[pos].comments,
+            });
+            data[pos].comments.splice(pos2, 1, {
+                author: name,
+                content,
+            });
+            
         } else {
-            data.comments.push(comment);
+            
+            if ( iU != -1) {
+                data[iU].comments.push(comment);
+                console.log('texxt', data)
+            } else {
+                 // console.log(iUser)
+                comment.comments.push({
+                    author: user.author,
+                    content: content,
+                    like: false,
+                });
+                data.push(comment);
+            }
         }
         this.setState({
             data,
@@ -91,63 +148,70 @@ class Exercise1 extends Component {
         });
     }
 
-    onClickDelete = (e, i) => {
+    onClickDelete = (e, i, index) => {
         let { data } = this.state;
-        data.comments.splice(i, 1);
+        console.log(i, index);
+        if (index == 0) {
+            data.splice(i, 1);
+        } else {
+            data[i].comments.splice(index, 1);
+        }
         this.setState({
             data
         });
     }
     
-    onClickEdit = (e, i) => {
+    onClickEdit = (e, i, index) => {
         let { data } = this.state;
-        let commentItem = data.comments[i];
-        console.log('data edit', data.comments[i], i)
+        let commentItem = data[i].comments[index];
+        console.log('data edit', data[i].author)
         this.setState({
-            name: commentItem.user,
+            name: data[i].author,
             content: commentItem.content,
             pos: i,
+            pos2: index,
         });
     }
 
     render() {
         let { data, user, name, content, pos } = this.state;
         // console.log('render', data.comments) 
-        let commentItem = data.comments.map((comment, index) => {
+     
+        
+
+        let listComment = data.map((item, i) => {
             return (
-                <div key={index} className="comment-list" style={{borderBottom: '1px solid #ddd'}}>
-                    <div className="comment-content">
-                        <h4>{ comment.user }</h4>
-                        <p>{ comment.content }</p>
-                    </div>
-                    <div className="comment-like">
-                        <button onClick={ (e) => this.onClickLike(e, index) } className={`btn ${comment.like ? 'btn-success': 'btn-secondary'}`} style={{ marginRight: '5px'}}>Like</button>
-                        <button onClick={ (e) => this.onClickEdit(e, index) } className="btn ml-2 btn-primary" style={{ marginRight: '5px'}}>Edit</button>
-                        <button onClick={ (e) => this.onClickDelete(e, index) } className="btn ml-2 btn-danger">Del</button>
-                    </div>
+                <div key={i}>
+                    <Row style={{ borderBottom: '1px solid #ddd', 'background': '#ddd'}}>
+                        <h2>{ item.author }</h2>
+                    </Row>
+                    <Row>
+                        { 
+                            item.comments.map((comment, index) => {
+                                return (
+                                    <div key={index} className="comment-list" style={{borderBottom: '1px solid #ddd'}}>
+                                        <div className="comment-content">
+                                            <h4>{ comment.user }</h4>
+                                            <p>{ comment.content }</p>
+                                        </div>
+                                        <div className="comment-like">
+                                            <button onClick={ (e) => this.onClickLike(e, i, index) } className={`btn ${comment.like ? 'btn-success': 'btn-secondary'}`} style={{ marginRight: '5px'}}>Like</button>
+                                            <button onClick={ (e) => this.onClickEdit(e, i, index) } className="btn ml-2 btn-primary" style={{ marginRight: '5px'}}>Edit</button>
+                                            <button onClick={ (e) => this.onClickDelete(e, i, index) } className="btn ml-2 btn-danger">Del</button>
+                                        </div>
+                                    </div>
+                                );
+                            }, this)
+                        }
+                    </Row>
                 </div>
             );
         });
+        
         return (
             <Container>
                 <Col md={{'size': 6, 'offset': 2}} style={{ marginTop: '50px', 'border': '1px solid #ddd', 'padding': '15px'}}>
-                    <Row style={{ borderBottom: '1px solid #ddd', 'background': '#ddd'}}>
-                        <h2>{ user.name }</h2>
-                        <p>{ user.description }</p>
-                    </Row>
-                    <Row>
-                        {/* <Media>
-                            <Media right href="#">Lien</Media>
-                            <Media body>
-                                <Media heading>
-                                Media heading
-                                </Media>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                            </Media>
-                        </Media> */}
-                        { commentItem }
-                        
-                    </Row>
+                    { listComment }
                     <Row style={{ borderTop: '1px solid #ddd', 'display': user.id ===  12 ? 'block' : 'none'}}>
                         <h3 style={{ textAlign: 'center', 'padding': '15px 15px 0' }}>{ pos > -1 ? 'Cập nhật' : 'Thêm mới' }</h3>
                         <Form style={{ marginTop: '15px' }}>
