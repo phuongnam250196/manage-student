@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Media, Button, Input,
-    Form,FormGroup, Label } from 'reactstrap';
+    Form,FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 class Exercise1 extends Component {
 
@@ -9,10 +9,10 @@ class Exercise1 extends Component {
         this.state= {
             user: {},
             data: [],
-            name: '',
-            content: '',
-            pos: -1,
-            pos2: -1,
+            isEdit: false,
+            showModal: false,
+            iModal: -1,
+            text: '',
         }
     }
 
@@ -28,7 +28,9 @@ class Exercise1 extends Component {
         let data = [
             {
                 author: 'Nam tran',
-                content: 'src/components/Exercise1.js Line 2:31:  Media is defined but never used  no-unused-varsSearchng',
+                content: 'Thực hành react với state, thêm bình luận.',
+                text: '',
+                id_comment: -1,
                 comments: [
                     {
                         'author': 'Nam tran',
@@ -48,8 +50,10 @@ class Exercise1 extends Component {
                 ],
             },
             {
-                author: 'Nguyen tran',
-                content: 'src/components/Exercise1.js Line 2:31:  words to learn more about each warning',
+                author: 'Admin',
+                content: 'Trả lời bình luận khi có quyền.',
+                text: '',
+                id_comment: -1,
                 comments: [
                     {
                         'author': 'Nam tran',
@@ -86,76 +90,48 @@ class Exercise1 extends Component {
         });
     }
 
-    onChange = (e) => {
+    onChange = (e ,i) => {
+        let { data, iModal, text } = this.state; 
         let target = e.target;
-        let name = target.name;
-        let value = target.value;
-        this.setState({
-            [name]: value
-        });
-    }
-
-    getIndex = (data, name) => {
-        for (let i in data) {
-            if (data[i].author === name) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    onClickComment = () => {
-        let { data, user, name, content, pos, pos2 } = this.state;
-        let comment = {
-            author: name,
-            content,
-            comments: []
-        }
-        console.log('inex', this.getIndex(data, name));
-        let iU = this.getIndex(data, name);
-        if (pos > -1 ) {
-            console.log(pos, pos2, data[pos].comments);
-            data.splice(pos, 1, {
-                author: name,
-                content,
-                comments: data[pos].comments,
-            });
-            data[pos].comments.splice(pos2, 1, {
-                author: name,
-                content,
-            });
-            
+        if (iModal < 0) {
+            data[i].text = target.value;
         } else {
-            
-            if ( iU != -1) {
-                data[iU].comments.push(comment);
-                console.log('texxt', data)
-            } else {
-                 // console.log(iUser)
-                comment.comments.push({
-                    author: user.author,
-                    content: content,
-                    like: false,
-                });
-                data.push(comment);
-            }
+            text = target.value;
         }
         this.setState({
             data,
-            name: '',
-            content: '',
-            pos: -1,
+            text
+        });
+    }
+
+    onClickComment = (e, i) => {
+        console.log(i);
+
+        let { data, user, isEdit } = this.state;
+        let id_comment = data[i].id_comment;
+
+        if (isEdit) {
+            data[i].comments[id_comment].content = data[i].text;
+            data[i].id_comment = -1;
+            isEdit = !isEdit;
+        } else {
+            data[i].comments.push({
+                'author': user.name,
+                'content': data[i].text,
+                'like': false,
+            });
+        }
+        data[i].text = '';
+        console.log('data create', data[i]);
+        this.setState({
+            data,
+            isEdit
         });
     }
 
     onClickDelete = (e, i, index) => {
         let { data } = this.state;
-        console.log(i, index);
-        if (index == 0) {
-            data.splice(i, 1);
-        } else {
-            data[i].comments.splice(index, 1);
-        }
+        data[i].comments.splice(index, 1);
         this.setState({
             data
         });
@@ -163,29 +139,59 @@ class Exercise1 extends Component {
     
     onClickEdit = (e, i, index) => {
         let { data } = this.state;
-        let commentItem = data[i].comments[index];
-        console.log('data edit', data[i].author)
+        data[i].text = data[i].comments[index].content;
+        data[i].id_comment = index;
+        console.log('data edit', i, data[i].id_comment);
         this.setState({
-            name: data[i].author,
-            content: commentItem.content,
-            pos: i,
-            pos2: index,
+            data,
+            isEdit: true,
+        });
+    }
+
+    toggle = () => {
+        this.setState({
+            showModal: !this.state.showModal,
+        })
+    }
+
+    onComment = (e, i) => {
+        let { data, iModal, text } = this.state;
+        iModal = i;
+        text = data[i].content;
+        
+        this.setState({
+            iModal,
+            data,
+            text,
+            showModal: !this.state.showModal,
+        });
+    }
+
+    onSubmitModal = (e, i) => {
+        let { data, text } = this.state;
+        data[i].content = text;
+        this.setState({
+            data,
+            text,
+            showModal: false,
         });
     }
 
     render() {
-        let { data, user, name, content, pos } = this.state;
-        // console.log('render', data.comments) 
-     
-        
+        let { data, user, isEdit, showModal, iModal, text } = this.state;
+        console.log('render', data, iModal) 
 
         let listComment = data.map((item, i) => {
             return (
-                <div key={i}>
+                <div key={i} style={{ marginBottom: '40px' }}>
                     <Row style={{ borderBottom: '1px solid #ddd', 'background': '#ddd'}}>
-                        <h2>{ item.author }</h2>
+                        <Col xs={item.author === user.name ? 8 : 12} style={{ 'padding': '10px' }}>
+                            <h2>{ item.author }</h2>
+                            <p style={{ marginBottom: '0px', }}>{ item.content }</p>
+                        </Col>
+                        <Col xs={4} style={{ textAlign: 'right', 'display': item.author === user.name ? 'block' : 'none' }}><Button color="info" onClick={ (e) => this.onComment(e, i) } style={{ 'color': '#fff', textTransform: 'uppercase', marginTop: '20px' }}>Sửa</Button></Col>
                     </Row>
-                    <Row>
+                    <Row style={{'border': '1px solid #ddd'}}>
                         { 
                             item.comments.map((comment, index) => {
                                 return (
@@ -196,7 +202,7 @@ class Exercise1 extends Component {
                                         </div>
                                         <div className="comment-like">
                                             <button onClick={ (e) => this.onClickLike(e, i, index) } className={`btn ${comment.like ? 'btn-success': 'btn-secondary'}`} style={{ marginRight: '5px'}}>Like</button>
-                                            <button onClick={ (e) => this.onClickEdit(e, i, index) } className="btn ml-2 btn-primary" style={{ marginRight: '5px'}}>Edit</button>
+                                            <button onClick={ (e) => this.onClickEdit(e, i, index) } className="btn ml-2 btn-primary" style={{ marginRight: '5px', 'display': comment.author === user.name ? 'inline-block' : 'none' }}>Edit</button>
                                             <button onClick={ (e) => this.onClickDelete(e, i, index) } className="btn ml-2 btn-danger">Del</button>
                                         </div>
                                     </div>
@@ -204,38 +210,40 @@ class Exercise1 extends Component {
                             }, this)
                         }
                     </Row>
+                    <Row style={{ 'display': user.id ===  12 ? 'block' : 'none'}}>
+                        <Form style={{ marginTop: '15px' }}>
+                            <FormGroup row style={{ marginBottom: '10px' }}>
+                                <Col sm={8}>
+                                    <Input onChange={ (e) => this.onChange(e, i) } value={ item.text } type="textarea" name="content" id="content" placeholder="Nhập nội dung" />
+                                </Col>
+                                <Col sm={4}>
+                                    <Button onClick={ (e) => this.onClickComment(e, i) }>{ isEdit ? 'Cập nhật' : 'Bình luận'}</Button>
+                                </Col>
+                            </FormGroup>
+                        </Form>
+                    </Row>
                 </div>
             );
         });
         
         return (
             <Container>
-                <Col md={{'size': 6, 'offset': 2}} style={{ marginTop: '50px', 'border': '1px solid #ddd', 'padding': '15px'}}>
+                <Col md={{'size': 6, 'offset': 2}} style={{ marginTop: '50px', 'padding': '15px'}}>
                     { listComment }
-                    <Row style={{ borderTop: '1px solid #ddd', 'display': user.id ===  12 ? 'block' : 'none'}}>
-                        <h3 style={{ textAlign: 'center', 'padding': '15px 15px 0' }}>{ pos > -1 ? 'Cập nhật' : 'Thêm mới' }</h3>
-                        <Form style={{ marginTop: '15px' }}>
-                            <FormGroup row style={{ marginBottom: '10px' }}>
-                                <Label for="full-name" sm={3}>Họ tên</Label>
-                                <Col sm={9}>
-                                    <Input onChange={ this.onChange } value={name} type="text" name="name" id="full-name" placeholder="Nhập họ tên" />
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row style={{ marginBottom: '10px' }}>
-                                <Label for="content" sm={3}>Nội dung</Label>
-                                <Col sm={9}>
-                                    <Input onChange={ this.onChange } value={content} type="textarea" name="content" id="content" placeholder="Nhập nội dung" />
-                                </Col>
-                            </FormGroup>
-                            
-                            <FormGroup row>
-                                <Col sm={{ size: 9, offset: 3 }}>
-                                    <Button onClick={ this.onClickComment }>Bình luận</Button>
-                                </Col>
-                            </FormGroup>
-                        </Form>
-                    </Row>
                 </Col>
+                <div>
+                    
+                    <Modal isOpen={ showModal } toggle={ this.toggle } className="">
+                        <ModalHeader toggle={ this.toggle }>Sửa bình luận</ModalHeader>
+                        <ModalBody>
+                            <textarea className="form-control" onChange={ (e) => this.onChange(e, iModal) } value={ iModal < 0 ?  '' : text } name="" id="" rows="3"></textarea>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" onClick={ (e) => this.onSubmitModal(e, iModal) }>Cập nhật</Button>{' '}
+                            <Button color="secondary" onClick={ this.toggle }>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
+                </div>
             </Container>
         );
     }

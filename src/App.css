@@ -134,3 +134,6 @@
 .comment-content p {
   margin-bottom: 0;
 }
+button:focus, textarea:focus {
+  box-shadow: none !important;
+}
