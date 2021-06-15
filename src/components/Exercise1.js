@@ -240,7 +240,7 @@ class Exercise1 extends Component {
                         </ModalBody>
                         <ModalFooter>
                             <Button color="primary" onClick={ (e) => this.onSubmitModal(e, iModal) }>Cập nhật</Button>{' '}
-                            <Button color="secondary" onClick={ this.toggle }>Cancel</Button>
+                            <Button color="secondary" onClick={ this.toggle }>Hủy</Button>
                         </ModalFooter>
                     </Modal>
                 </div>
