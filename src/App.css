@@ -137,3 +137,30 @@
 button:focus, textarea:focus {
   box-shadow: none !important;
 }
+
+/* icon */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+.icon-thumbs-up {
+  width: 2em;
+  height: 2em;
+}
+.icon-trash-o {
+  width: 2em;
+  height: 2em;
+  color: darkred;
+  margin-left: 10px;
+}
+
+.icon-pencil {
+  width: 2em;
+  height: 2em;
+  color: darkblue;
+  margin-left: 15px;
+}
