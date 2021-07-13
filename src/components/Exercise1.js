@@ -5,6 +5,7 @@ import {
 
 import "../App.css";
 import ItemUser from './modun/ItemUser';
+import ModalUser from './modun/ModalUser';
 
 import { BASE_URL } from "./Libs/constant";
 import Axios from "axios";
@@ -32,7 +33,7 @@ class Exercise1 extends Component {
     getData() {
         let user = {
             id: 12,
-            name: 'Admin',
+            name: 'ad',
         }
 
         Axios.get(`${BASE_URL}/post`).then(res => {
@@ -131,14 +132,19 @@ class Exercise1 extends Component {
         })
     }
 
-    onSubmitModal = (e, i) => {
-        let { data, text_modal } = this.state;
-        data[i].content = text_modal;
-        this.setState({
-            data,
-            text_modal,
-            showModal: false,
+    onSubmitModal = (val) => {
+        console.log('val', val)
+        let { data } = this.state;
+        data[val.i].content = val.text_modal;
+        Axios.put(`${BASE_URL}/post/${data[val.i].id}`, data[val.i]).then((res) => {
+            console.log('res update', res.data)
+            this.setState({
+                data,
+                text_modal: val.text_modal,
+                showModal: val.showModal,
+            });
         });
+        
     }
 
     render() {
@@ -168,16 +174,14 @@ class Exercise1 extends Component {
                 </Col>
                 <div>
 
-                    <Modal isOpen={showModal} toggle={this.toggle} className="">
-                        <ModalHeader toggle={this.toggle}>Sửa bình luận</ModalHeader>
-                        <ModalBody>
-                            <textarea className="form-control" onChange={(e) => this.onChange(e)} value={text_modal} name="" id="" rows="3"></textarea>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="primary" onClick={(e) => this.onSubmitModal(e, iModal)}>Cập nhật</Button>{' '}
-                            <Button color="secondary" onClick={this.toggle}>Hủy</Button>
-                        </ModalFooter>
-                    </Modal>
+                    <ModalUser 
+                        showModal={showModal}
+                        iModal={iModal}
+                        text_modal={text_modal}
+                        onSubmitModal={(val) => this.onSubmitModal(val)}
+                        toggle={this.toggle}
+
+                    />
                 </div>
             </Container>
         );

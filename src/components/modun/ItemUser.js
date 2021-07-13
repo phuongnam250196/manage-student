@@ -55,6 +55,7 @@ class ItemUser extends Component {
     }
 
     onComment = (e, i) => {
+        console.log(i)
         this.props.onComment(i);
     }
     
