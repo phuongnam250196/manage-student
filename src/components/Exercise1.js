@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import {
-    Container, Row, Col, Button , Modal, ModalHeader, ModalBody, ModalFooter
+    Container, Col, Button , Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
 
 import "../App.css";
 import ItemUser from './modun/ItemUser';
+
+import { BASE_URL } from "./Libs/constant";
+import Axios from "axios";
+
 class Exercise1 extends Component {
 
     constructor(props) {
@@ -30,56 +34,14 @@ class Exercise1 extends Component {
             id: 12,
             name: 'Admin',
         }
-        let data = [
-            {
-                author: 'Nam tran',
-                content: 'Thực hành react với state, thêm bình luận.',
-                comments: [
-                    {
-                        'author': 'Nam tran',
-                        'content': 'ReactJS là gì?',
-                        'like': false,
-                    },
-                    {
-                        'author': 'Levantoi',
-                        'content': 'Javascript học như thé nào?',
-                        'like': false,
-                    },
-                    {
-                        'author': 'Hùng đặng',
-                        'content': '.NET là số 1.',
-                        'like': true,
-                    }
-                ],
-            },
-            {
-                author: 'Admin',
-                content: 'Trả lời bình luận khi có quyền.',
-                comments: [
-                    {
-                        'author': 'Nam tran',
-                        'content': 'ReactJS là gì?',
-                        'like': false,
-                    },
-                    {
-                        'author': 'Levantoi',
-                        'content': 'Javascript học như thé nào?',
-                        'like': false,
-                    },
-                    {
-                        'author': 'Hùng đặng',
-                        'content': '.NET là số 1.',
-                        'like': true,
-                    }
-                ],
-            }
-        ];
 
-
-        this.setState({
-            user,
-            data
-        });
+        Axios.get(`${BASE_URL}/post`).then(res => {
+            console.log('res', res.data);
+            this.setState({
+                user,
+                data: res.data
+            });
+        }).catch(err => console.log(err));
     }
 
     onClickLike = (val) => {
@@ -96,30 +58,40 @@ class Exercise1 extends Component {
         const i = val.i;
         const text = val.text;
         let { data, user, isEdit } = this.state;
-        data[i].text = text;
         if (isEdit) {
-            data[i].comments[val.id_comment].content = data[i].text;
+            data[i].comments[val.id_comment].content = text;
             isEdit = !isEdit;
         } else {
             data[i].comments.push({
                 'author': user.name,
-                'content': data[i].text,
+                'content': text,
                 'like': false,
             });
         }
-        data[i].text = '';
-        this.setState({
-            data,
-            isEdit
+        Axios.put(`${BASE_URL}/post/${data[i].id}`, data[i]).then((res) => {
+            // console.log('res create', res.data);
+            this.setState({
+                data,
+                isEdit
+            });
         });
+        
     }
 
     onClickDelete = (val) => {
         let { data } = this.state;
         data[val.i].comments.splice(val.index, 1);
-        this.setState({
-            data
+        Axios.put(`${BASE_URL}/post/${data[val.i].id}`, data[val.i]).then((res) => {
+            // console.log('res update', res.data)
+            this.setState({
+                data
+            })
         });
+        // Axios.delete(`${BASE_URL}/post/${data[val.i].id}`).then((res) => {
+        //     console.log('res delete', res.data)
+           
+        // });
+        
     }
 
     onClickEdit = (val) => {
@@ -141,8 +113,7 @@ class Exercise1 extends Component {
     }
 
     onComment = (i) => {
-        let { data, text_modal } = this.state;
-        // console.log('i comment', i, data[i].content);
+        let { data } = this.state;
         this.setState({
             text_modal: data[i].content,
             showModal: !this.state.showModal,
@@ -183,7 +154,6 @@ class Exercise1 extends Component {
                     onClickComment={ (val) => this.onClickComment(val) }
                     onClickEdit={ (val) => this.onClickEdit(val) }
                     onClickDelete={ (val) => this.onClickDelete(val) }
-                    onComment={ (i) => this.onComment(i) }
                 />
             );
         });

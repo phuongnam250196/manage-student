@@ -49,7 +49,8 @@ class ItemUser extends Component {
         }
         this.props.onClickComment(val);
         this.setState({
-            textItem: ""
+            textItem: "",
+            isEdit: false
         })
     }
 
