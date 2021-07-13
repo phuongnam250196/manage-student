@@ -49,8 +49,11 @@ class Exercise1 extends Component {
         const i = val.i;
         const index = val.index;
         data[i].comments[index].like = !data[i].comments[index].like;
-        this.setState({
-            data
+        Axios.put(`${BASE_URL}/post/${data[i].id}`, data[i]).then((res) => {
+            // console.log('res create', res.data);
+            this.setState({
+                data
+            });
         });
     }
 
