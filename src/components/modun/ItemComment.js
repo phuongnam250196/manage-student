@@ -32,10 +32,11 @@ class ItemComment extends Component {
 
     render() {
         const { comment, index, user, i } = this.props;
+        // console.log('comment', )
         return (
             <div className="comment-list" style={{ borderBottom: '1px solid #ddd' }}>
                 <div className="comment-content">
-                    <h4>{comment.user}</h4>
+                    <h4>{comment.author}</h4>
                     <p>{comment.content}</p>
                 </div>
                 <div className="comment-like">

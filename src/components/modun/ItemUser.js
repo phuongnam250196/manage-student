@@ -19,11 +19,15 @@ class ItemUser extends Component {
 
     onClickEdit = (val) => {
         this.props.onClickEdit(val);
-        const { item } = this.props;
+        const { item, comments } = this.props;
+        let comment = comments.find(comment => {
+            return item.comments[val.index] === comment.id;
+        })
+        // console.log(item.comments[val.index], comment)
         this.setState({
-            textItem: item.comments[val.index].content,
+            textItem: comment.content,
             isEdit: true,
-            id_comment: val.index
+            id_comment: comment.id
         })
     }
 
@@ -55,12 +59,12 @@ class ItemUser extends Component {
     }
 
     onComment = (e, i) => {
-        console.log(i)
+        // console.log(i)
         this.props.onComment(i);
     }
     
     render() {
-        const { item, i, user } = this.props;
+        const { item, i, user, comments } = this.props;
         const { textItem, isEdit } = this.state;
         return (
             <div style={{ marginBottom: '40px' }}>
@@ -74,19 +78,27 @@ class ItemUser extends Component {
                 <Row style={{ 'border': '1px solid #ddd' }}>
                     {
                         item.comments.map((comment, index) => {
+                            
                             return (
-                                <ItemComment 
-                                    key={index} 
-                                    comment={comment} 
-                                    index={index} 
-                                    user={user} 
-                                    i ={i}
-                                    onClickLike = { (val) => this.onClickLike(val) }
-                                    onClickEdit = { (val) => this.onClickEdit(val) }
-                                    onClickDelete = { (val) => this.onClickDelete(val) } 
-                                />
+                                comments.map((comm, k) => {
+                                    if (comm.id === comment) {
+                                        // console.log('ccc', comment, comm);
+                                        return (
+                                            <ItemComment 
+                                                key={k} 
+                                                comment={comm}
+                                                index={index}
+                                                user={user} 
+                                                i ={i}
+                                                onClickLike = { (val) => this.onClickLike(val) }
+                                                onClickEdit = { (val) => this.onClickEdit(val) }
+                                                onClickDelete = { (val) => this.onClickDelete(val) } 
+                                            />
+                                        );
+                                    }
+                                })
                             );
-                        }, this)
+                        })
                     }
                 </Row>
                 <Row style={{ 'display': user.id === 12 ? 'block' : 'none' }}>
